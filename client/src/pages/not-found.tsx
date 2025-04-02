@@ -20,7 +20,7 @@ export default function NotFound() {
   return (
     <>
       <Helmet>
-        <title>Page Not Found - Order Tracker</title>
+        <title>Page Not Found - Order Tracking System</title>
         <meta name="description" content="The requested page could not be found" />
       </Helmet>
       
@@ -35,7 +35,7 @@ export default function NotFound() {
                   The page you're looking for doesn't exist or has been moved.
                 </p>
                 <p>
-                  You can search for an order instead:
+                  You can search for orders by phone number instead:
                 </p>
               </div>
 
@@ -43,7 +43,7 @@ export default function NotFound() {
                 <div className="flex w-full max-w-sm mx-auto items-center space-x-2">
                   <Input 
                     type="text" 
-                    placeholder="Enter order number" 
+                    placeholder="Enter your phone number" 
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                     className="text-center"

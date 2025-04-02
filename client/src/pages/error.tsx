@@ -10,7 +10,7 @@ export default function ErrorPage() {
   const [location, navigate] = useLocation();
   const [orderNumber, setOrderNumber] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>("ไม่พบข้อมูลคำสั่งซื้อของท่าน");
+  const [errorMessage, setErrorMessage] = useState<string>("Order information not found");
 
   // Extract state from location if available
   useEffect(() => {
@@ -36,8 +36,8 @@ export default function ErrorPage() {
   return (
     <>
       <Helmet>
-        <title>ไม่พบคำสั่งซื้อ - ระบบติดตามคำสั่งซื้อ</title>
-        <meta name="description" content="ไม่พบข้อมูลคำสั่งซื้อตามที่ระบุ" />
+        <title>Order Not Found - Order Tracking System</title>
+        <meta name="description" content="The specified order could not be found" />
       </Helmet>
       
       <div className="min-h-[80vh] flex items-center justify-center py-10">
@@ -45,15 +45,15 @@ export default function ErrorPage() {
           <Card className="shadow-lg">
             <CardContent className="pt-6 pb-4 text-center">
               <AlertCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">ไม่พบคำสั่งซื้อ</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">Order Not Found</h2>
               <div className="text-gray-600 mb-6 space-y-2">
                 <p>
                   {orderNumber 
-                    ? `ไม่พบคำสั่งซื้อที่ตรงกับหมายเลขโทรศัพท์ "${orderNumber}"` 
+                    ? `No orders found matching the phone number "${orderNumber}"` 
                     : errorMessage}
                 </p>
                 <p>
-                  โปรดตรวจสอบหมายเลขโทรศัพท์และลองใหม่อีกครั้ง
+                  Please check your phone number and try again
                 </p>
               </div>
 
@@ -61,14 +61,14 @@ export default function ErrorPage() {
                 <div className="flex w-full max-w-sm mx-auto items-center space-x-2">
                   <Input 
                     type="text" 
-                    placeholder="กรุณาใส่หมายเลขโทรศัพท์" 
+                    placeholder="Enter your phone number" 
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                     className="text-center"
                   />
                   <Button type="submit" disabled={!searchValue.trim()}>
                     <Phone className="h-4 w-4 mr-2" />
-                    ค้นหา
+                    Search
                   </Button>
                 </div>
               </form>
@@ -77,7 +77,7 @@ export default function ErrorPage() {
               <Link href="/">
                 <Button variant="outline" className="flex items-center mx-auto">
                   <ArrowLeft className="mr-2 h-4 w-4" />
-                  กลับสู่หน้าหลัก
+                  Back to Home
                 </Button>
               </Link>
             </CardFooter>
