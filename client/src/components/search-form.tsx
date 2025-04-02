@@ -42,7 +42,7 @@ export default function SearchForm() {
     setIsSubmitting(true);
     
     // Navigate to the order page using the entered order number
-    navigate(`/${data.orderNumber}`);
+    navigate(`/order/${data.orderNumber}`);
     
     setIsSubmitting(false);
   };

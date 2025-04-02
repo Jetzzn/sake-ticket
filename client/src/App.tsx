@@ -11,8 +11,8 @@ function App() {
       <main className="flex-grow">
         <Switch>
           <Route path="/" component={HomePage} />
-          <Route path="/:orderNumber" component={OrderPage} />
           <Route path="/error" component={ErrorPage} />
+          <Route path="/order/:orderNumber" component={OrderPage} />
           <Route component={NotFound} />
         </Switch>
       </main>
