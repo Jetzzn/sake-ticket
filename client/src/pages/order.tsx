@@ -25,11 +25,16 @@ export default function OrderPage() {
   // If there's an error, navigate to the error page
   useEffect(() => {
     if (isError) {
+      // For 404 errors, show a specific message
+      const errorMsg = error instanceof Error 
+        ? error.message 
+        : "We encountered an error while searching for your order.";
+      
       navigate("/error", { 
         replace: true, 
         state: { 
           orderNumber,
-          error: error instanceof Error ? error.message : "Unknown error"
+          error: errorMsg
         }
       });
     }
