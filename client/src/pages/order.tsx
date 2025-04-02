@@ -97,7 +97,7 @@ export default function OrderPage() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-red-700">
-                    <span className="font-medium">คำสั่งซื้อถูกยกเลิก:</span> คำสั่งซื้อนี้ได้ถูกยกเลิกแล้ว
+                    <span className="font-medium">Order Canceled:</span> This order has been canceled.
                   </p>
                 </div>
               </div>
@@ -115,7 +115,7 @@ export default function OrderPage() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-gray-700">
-                    <span className="font-medium">คำสั่งซื้อหมดอายุ:</span> คำสั่งซื้อนี้ได้หมดอายุแล้ว
+                    <span className="font-medium">Order Expired:</span> This order has expired.
                   </p>
                 </div>
               </div>
@@ -137,7 +137,7 @@ export default function OrderPage() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-yellow-700">
-                    <span className="font-medium">โปรดทราบ:</span> ท่านยังไม่ได้ชำระเงิน โปรดชำระเงินเพื่อดูรายละเอียดคำสั่งซื้อทั้งหมด
+                    <span className="font-medium">Please Note:</span> Payment is required to view complete order details.
                   </p>
                 </div>
               </div>
