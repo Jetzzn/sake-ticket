@@ -8,7 +8,7 @@ interface OrderQRCodeProps {
 
 export default function OrderQRCode({ order }: OrderQRCodeProps) {
   // Generate the full URL for the QR code
-  const qrCodeUrl = `${window.location.origin}/order/${order.orderNumber}`;
+  const qrCodeUrl = `${order.orderNumber}`;
   
   // QR code image URL
   const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${qrCodeUrl}`;

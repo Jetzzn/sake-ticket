@@ -86,6 +86,14 @@ export default function OrderPage() {
             </ol>
           </nav>
 
+          {/* Show QR Code at the top for paid orders */}
+          {(order.paymentStatus === "PAYMENT_LS_RLP" || 
+            order.paymentStatus === "PAYMENT_LS_QR_PROMPTPAY" || 
+            order.paymentStatus === "PAID") && (
+            /* QR Code */
+            <OrderQRCode order={order} />
+          )}
+
           {/* Order Status Alert */}
           {order.orderStatus === "CANCELED" && (
             <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-8">
@@ -182,32 +190,27 @@ export default function OrderPage() {
             </div>
           </div>
           
-          {/* Show the following components only for paid orders */}
+          {/* Show Order Items Summary only for paid orders */}
           {(order.paymentStatus === "PAYMENT_LS_RLP" || 
             order.paymentStatus === "PAYMENT_LS_QR_PROMPTPAY" || 
             order.paymentStatus === "PAID") && (
-            <>
-              {/* QR Code */}
-              <OrderQRCode order={order} />
-              
-              {/* Order Items Summary */}
-              <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
-                <div className="px-4 py-5 sm:px-6">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Order Items</h3>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">Summary of ordered items.</p>
-                </div>
-                <div className="border-t border-gray-200">
-                  <div className="px-6 py-5">
-                    <div className="bg-gray-50 rounded-lg p-4 text-base text-gray-800">
-                      {/* Remove quotes from the string if it starts and ends with quotes */}
-                      {typeof order.orderItemsSummary === 'string' 
-                        ? order.orderItemsSummary.replace(/^"|"$/g, '') 
-                        : 'No items data available'}
-                    </div>
+            /* Order Items Summary */
+            <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
+              <div className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg leading-6 font-medium text-gray-900">Order Items</h3>
+                <p className="mt-1 max-w-2xl text-sm text-gray-500">Summary of ordered items.</p>
+              </div>
+              <div className="border-t border-gray-200">
+                <div className="px-6 py-5">
+                  <div className="bg-gray-50 rounded-lg p-4 text-base text-gray-800">
+                    {/* Remove quotes from the string if it starts and ends with quotes */}
+                    {typeof order.orderItemsSummary === 'string' 
+                      ? order.orderItemsSummary.replace(/^"|"$/g, '') 
+                      : 'No items data available'}
                   </div>
                 </div>
               </div>
-            </>
+            </div>
           )}
           
   
