@@ -7,7 +7,7 @@ import { ZodError } from "zod";
 export async function registerRoutes(app: Express): Promise<Server> {
   // API routes - prefix all routes with /api
   
-  // Get order by order number
+  // Get order by order number (keeping for backward compatibility)
   app.get("/api/orders/:orderNumber", async (req, res) => {
     try {
       const { orderNumber } = req.params;
@@ -31,6 +31,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.json(order);
     } catch (error) {
       console.error("Error fetching order:", error);
+      
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid order data format", 
+          details: error.errors 
+        });
+      }
+      
+      return res.status(500).json({ 
+        message: "Failed to fetch order information"
+      });
+    }
+  });
+  
+  // Get order by phone number
+  app.get("/api/orders/phone/:phoneNumber", async (req, res) => {
+    try {
+      const { phoneNumber } = req.params;
+      
+      if (!phoneNumber) {
+        return res.status(400).json({ message: "Phone number is required" });
+      }
+      
+      const order = await storage.getOrderByPhoneNumber(phoneNumber);
+      
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+      
+      // Add this order to recent orders
+      await storage.addRecentOrder({
+        orderNumber: order.orderNumber,
+        viewedAt: new Date()
+      });
+      
+      return res.json(order);
+    } catch (error) {
+      console.error("Error fetching order by phone:", error);
       
       if (error instanceof ZodError) {
         return res.status(400).json({ 

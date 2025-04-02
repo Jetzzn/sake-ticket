@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Search } from "lucide-react";
+import { Phone } from "lucide-react";
 import { 
   Form, 
   FormControl, 
@@ -15,11 +15,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
-// Schema for order number validation
+// Schema for phone number validation
 const searchSchema = z.object({
-  orderNumber: z.string()
-    .min(1, "Order number is required")
-    .regex(/^[A-Za-z0-9-]+$/, "Invalid order number format")
+  phoneNumber: z.string()
+    .min(1, "หมายเลขโทรศัพท์จำเป็นต้องระบุ")
+    .regex(/^[0-9]+$/, "รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง")
 });
 
 type SearchFormValues = z.infer<typeof searchSchema>;
@@ -33,7 +33,7 @@ export default function SearchForm() {
   const form = useForm<SearchFormValues>({
     resolver: zodResolver(searchSchema),
     defaultValues: {
-      orderNumber: ""
+      phoneNumber: ""
     }
   });
 
@@ -41,8 +41,8 @@ export default function SearchForm() {
   const onSubmit = (data: SearchFormValues) => {
     setIsSubmitting(true);
     
-    // Navigate to the order page using the entered order number
-    navigate(`/order/${data.orderNumber}`);
+    // Navigate to the order page using the entered phone number
+    navigate(`/order/${data.phoneNumber}`);
     
     setIsSubmitting(false);
   };
@@ -53,17 +53,17 @@ export default function SearchForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="orderNumber"
+            name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Order Number</FormLabel>
+                <FormLabel>หมายเลขโทรศัพท์</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Search className="h-4 w-4 text-gray-400" />
+                      <Phone className="h-4 w-4 text-gray-400" />
                     </div>
                     <Input
-                      placeholder="Enter order number (e.g., ORD-12345)"
+                      placeholder="กรุณาใส่หมายเลขโทรศัพท์ (เช่น 0812345678)"
                       className="pl-10"
                       {...field}
                     />
@@ -78,7 +78,7 @@ export default function SearchForm() {
               type="submit" 
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Searching..." : "Search Order"}
+              {isSubmitting ? "กำลังค้นหา..." : "ค้นหาคำสั่งซื้อ"}
             </Button>
           </div>
         </form>

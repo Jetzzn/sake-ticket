@@ -12,14 +12,14 @@ export default function OrderPage() {
   const { orderNumber } = useParams();
   const [, navigate] = useLocation();
   
-  // Fetch order data
+  // Fetch order data - try to fetch by phone number first
   const { 
     data: order, 
     isLoading, 
     isError, 
     error
   } = useQuery<Order>({
-    queryKey: [`/api/orders/${orderNumber}`],
+    queryKey: [`/api/orders/phone/${orderNumber}`],
     retry: 1
   });
   
@@ -29,7 +29,7 @@ export default function OrderPage() {
       // For 404 errors, show a specific message
       const errorMsg = error instanceof Error 
         ? error.message 
-        : "We encountered an error while searching for your order.";
+        : "ไม่พบข้อมูลคำสั่งซื้อของท่าน โปรดตรวจสอบหมายเลขโทรศัพท์อีกครั้ง";
       
       navigate("/error", { 
         replace: true, 

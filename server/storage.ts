@@ -9,7 +9,7 @@ import {
   type RecentOrder,
   type InsertRecentOrder
 } from "@shared/schema";
-import { fetchOrderFromAirtable } from "./airtable";
+import { fetchOrderFromAirtable, fetchOrderFromAirtableByPhone } from "./airtable";
 
 // Define the storage interface
 export interface IStorage {
@@ -21,6 +21,7 @@ export interface IStorage {
   // Order methods
   getOrder(id: number): Promise<Order | undefined>;
   getOrderByOrderNumber(orderNumber: string): Promise<Order | undefined>;
+  getOrderByPhoneNumber(phoneNumber: string): Promise<Order | undefined>;
   createOrder(order: InsertOrder): Promise<Order>;
   updateOrder(id: number, order: Partial<InsertOrder>): Promise<Order | undefined>;
   
@@ -94,6 +95,35 @@ export class MemStorage implements IStorage {
       return undefined;
     } catch (error) {
       console.error(`Error fetching order ${orderNumber} from Airtable:`, error);
+      throw error;
+    }
+  }
+
+  async getOrderByPhoneNumber(phoneNumber: string): Promise<Order | undefined> {
+    // First, check our in-memory storage
+    const existingOrder = Array.from(this.orders.values()).find(
+      (order) => order.phoneNumber === phoneNumber
+    );
+
+    if (existingOrder) {
+      return existingOrder;
+    }
+
+    // If the order doesn't exist in memory, fetch it from Airtable by phone number
+    try {
+      const airtableOrder = await fetchOrderFromAirtableByPhone(phoneNumber);
+      
+      if (airtableOrder) {
+        // Store the order in memory for future requests
+        const id = this.orderCurrentId++;
+        const order: Order = { ...airtableOrder, id };
+        this.orders.set(id, order);
+        return order;
+      }
+      
+      return undefined;
+    } catch (error) {
+      console.error(`Error fetching order with phone number ${phoneNumber} from Airtable:`, error);
       throw error;
     }
   }

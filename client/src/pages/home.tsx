@@ -5,17 +5,17 @@ export default function HomePage() {
   return (
     <>
       <Helmet>
-        <title>Order Tracker - Search for your order</title>
-        <meta name="description" content="Track your order by entering your order number" />
+        <title>ระบบติดตามคำสั่งซื้อ - ค้นหาคำสั่งซื้อของคุณ</title>
+        <meta name="description" content="ติดตามคำสั่งซื้อของคุณด้วยการใส่หมายเลขโทรศัพท์" />
       </Helmet>
       
       <div className="py-10">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Track Your Order</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">ติดตามคำสั่งซื้อของคุณ</h1>
             <p className="text-gray-600 max-w-xl mx-auto">
-              Enter your order number to view detailed information about your order status, 
-              shipping details, and more.
+              กรุณาใส่หมายเลขโทรศัพท์ของคุณเพื่อดูข้อมูลรายละเอียดเกี่ยวกับสถานะคำสั่งซื้อ 
+              รายละเอียดการจัดส่ง และอื่นๆ
             </p>
           </div>
           

@@ -23,6 +23,7 @@ const AIRTABLE_API_KEY = "patTHltTr3vda9aDG.2df10985569ad6dca6d185bbf3f99e94e8c1
 const AIRTABLE_BASE_ID = "appTywnuzq68a91t9";
 const TABLE_NAME = "Table 1";
 const FIELD_NAME = "orderNumber";
+const PHONE_FIELD_NAME = "phoneNumber";
 
 // Function to fetch an order from Airtable by order number
 export async function fetchOrderFromAirtable(orderNumber: string): Promise<Order | null> {
@@ -53,6 +54,39 @@ export async function fetchOrderFromAirtable(orderNumber: string): Promise<Order
     return convertAirtableOrderToOrder(validatedRecord);
   } catch (error) {
     console.error('Error fetching order from Airtable:', error);
+    throw error;
+  }
+}
+
+// Function to fetch an order from Airtable by phone number
+export async function fetchOrderFromAirtableByPhone(phoneNumber: string): Promise<Order | null> {
+  try {
+    const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(TABLE_NAME)}?filterByFormula={${PHONE_FIELD_NAME}}="${encodeURIComponent(phoneNumber)}"`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Airtable API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    
+    if (!data.records || data.records.length === 0) {
+      return null;
+    }
+
+    // Validate the response
+    const validatedRecord = airtableOrderSchema.parse(data.records[0]);
+    
+    // Convert to our Order format
+    return convertAirtableOrderToOrder(validatedRecord);
+  } catch (error) {
+    console.error('Error fetching order from Airtable by phone:', error);
     throw error;
   }
 }
