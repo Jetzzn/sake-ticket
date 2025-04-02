@@ -119,57 +119,13 @@ export default function OrderPage() {
               <p className="mt-1 max-w-2xl text-sm text-gray-500">Summary of ordered items.</p>
             </div>
             <div className="border-t border-gray-200">
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Product
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        SKU
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Quantity
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Price
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Total
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {Array.isArray(order.orderItemsSummary) ? (
-                      order.orderItemsSummary.map((item, index) => (
-                        <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {item.productName}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
-                            {item.sku}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                            {item.quantity}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
-                            {item.price}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
-                            {item.total}
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={5} className="px-6 py-4 text-sm text-gray-500 text-center">
-                          No items data available
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+              <div className="px-6 py-5">
+                <div className="bg-gray-50 rounded-lg p-4 text-base text-gray-800">
+                  {/* Remove quotes from the string if it starts and ends with quotes */}
+                  {typeof order.orderItemsSummary === 'string' 
+                    ? order.orderItemsSummary.replace(/^"|"$/g, '') 
+                    : 'No items data available'}
+                </div>
               </div>
             </div>
           </div>
