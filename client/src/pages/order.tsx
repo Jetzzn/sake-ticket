@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet";
 import { Home, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Loading from "@/components/loading";
+import OrderQRCode from "@/components/order-qr-code";
 import { type Order } from "@shared/schema";
 
 export default function OrderPage() {
@@ -135,6 +136,8 @@ export default function OrderPage() {
             </div>
           </div>
           
+          {/* QR Code */}
+          <OrderQRCode order={order} />
 
         </div>
       </div>

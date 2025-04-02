@@ -74,12 +74,6 @@ export default function SearchForm() {
           />
           
           <div className="flex items-center justify-between">
-            <a 
-              href="#" 
-              className="text-sm font-medium text-primary hover:text-blue-700"
-            >
-              Don't have an order number?
-            </a>
             <Button 
               type="submit" 
               disabled={isSubmitting}
