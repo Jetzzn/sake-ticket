@@ -59,57 +59,16 @@ export async function fetchOrderFromAirtable(orderNumber: string): Promise<Order
 function convertAirtableOrderToOrder(airtableOrder: AirtableOrder): Order {
   const fields = airtableOrder.fields;
   
-  // Create items from orderItemsSummary if available
-  let items: OrderItem[] = [];
-  if (fields.orderItemsSummary) {
-    // Create a single item with the summary
-    items = [
-      {
-        productName: fields.orderItemsSummary,
-        sku: "SKU-" + fields.orderNumber,
-        quantity: 1,
-        price: fields.totalPrice || "0",
-        total: fields.totalPrice || "0"
-      }
-    ];
-  } else {
-    // Default item if no order items summary
-    items = [
-      {
-        productName: "Order Item",
-        sku: "SKU-" + fields.orderNumber,
-        quantity: 1,
-        price: fields.totalPrice || "0",
-        total: fields.totalPrice || "0"
-      }
-    ];
-  }
-
-  // Create a default tracking update
-  const trackingUpdates: TrackingUpdate[] = [
-    {
-      status: "Order Received",
-      date: new Date().toLocaleDateString(),
-      timestamp: new Date().toISOString(),
-      icon: "package" 
-    }
-  ];
+  // No need to process items and tracking updates with our simplified schema
 
   // Create the InsertOrder object with properly mapped fields
   const insertOrder: InsertOrder = {
     orderNumber: fields.orderNumber,
-    status: "Processing", // Default status
-    orderDate: new Date(), // Current date as default
-    customerName: fields.recipientName || "Customer",
-    shippingAddress: fields.email || "-",
-    shippingMethod: "Standard Shipping", // Default shipping method
-    trackingNumber: fields.phoneNumber ? fields.phoneNumber : null, // Ensure it's string | null
-    subtotal: fields.totalPrice || "0",
-    shipping: "0",
-    tax: "0",
-    total: fields.totalPrice || "0",
-    items: items as unknown as any, // Cast to satisfy jsonb type
-    trackingUpdates: trackingUpdates as unknown as any, // Cast to satisfy jsonb type
+    recipientName: fields.recipientName || "",
+    phoneNumber: fields.phoneNumber || "",
+    email: fields.email || "",
+    totalPrice: fields.totalPrice || "0",
+    orderItemsSummary: fields.orderItemsSummary ? JSON.stringify(fields.orderItemsSummary) : JSON.stringify("No items"),
     airtableId: airtableOrder.id,
   };
 

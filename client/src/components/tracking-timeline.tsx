@@ -6,7 +6,8 @@ interface TrackingTimelineProps {
 }
 
 export default function TrackingTimeline({ order }: TrackingTimelineProps) {
-  const trackingUpdates = order.trackingUpdates as TrackingUpdate[] || [];
+  // This component is not used in the current version
+  const trackingUpdates: TrackingUpdate[] = [];
   
   // Get icon component based on the icon string
   const getIcon = (icon: string) => {

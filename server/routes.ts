@@ -25,7 +25,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add this order to recent orders
       await storage.addRecentOrder({
         orderNumber: order.orderNumber,
-        status: order.status,
         viewedAt: new Date()
       });
       

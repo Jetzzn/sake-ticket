@@ -18,18 +18,11 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
   orderNumber: text("order_number").notNull().unique(),
-  status: text("status").notNull(),
-  orderDate: timestamp("order_date").notNull(),
-  customerName: text("customer_name").notNull(),
-  shippingAddress: text("shipping_address").notNull(),
-  shippingMethod: text("shipping_method").notNull(),
-  trackingNumber: text("tracking_number"),
-  subtotal: text("subtotal").notNull(),
-  shipping: text("shipping").notNull(),
-  tax: text("tax").notNull(),
-  total: text("total").notNull(),
-  items: jsonb("items").notNull(),
-  trackingUpdates: jsonb("tracking_updates"),
+  recipientName: text("recipient_name").notNull(),
+  phoneNumber: text("phone_number").notNull(),
+  email: text("email").notNull(),
+  totalPrice: text("total_price").notNull(),
+  orderItemsSummary: jsonb("order_items_summary").notNull(),
   airtableId: text("airtable_id").notNull().unique(),
 });
 
@@ -41,7 +34,6 @@ export const insertOrderSchema = createInsertSchema(orders).omit({
 export const recentOrders = pgTable("recent_orders", {
   id: serial("id").primaryKey(),
   orderNumber: text("order_number").notNull(),
-  status: text("status").notNull(),
   viewedAt: timestamp("viewed_at").notNull().defaultNow(),
 });
 
