@@ -23,6 +23,8 @@ export const orders = pgTable("orders", {
   email: text("email").notNull(),
   totalPrice: text("total_price").notNull(),
   orderItemsSummary: jsonb("order_items_summary").notNull(),
+  orderStatus: text("order_status").default("FINALIZED"),
+  paymentStatus: text("payment_status").default("NO_PAYMENT"),
   airtableId: text("airtable_id").notNull().unique(),
 });
 
