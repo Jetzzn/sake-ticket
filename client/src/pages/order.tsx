@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
-import { Home, ChevronRight, Headset } from "lucide-react";
+import { Home, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Loading from "@/components/loading";
 import { type Order } from "@shared/schema";
@@ -123,21 +123,7 @@ export default function OrderPage() {
             </div>
           </div>
           
-          {/* Help Section */}
-          <div className="mt-8 bg-white shadow sm:rounded-lg">
-            <div className="px-4 py-5 sm:p-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">Need help with your order?</h3>
-              <div className="mt-2 max-w-xl text-sm text-gray-500">
-                <p>If you have any questions or concerns about your order, our customer service team is here to help.</p>
-              </div>
-              <div className="mt-5">
-                <Button className="flex items-center">
-                  <Headset className="mr-2 h-4 w-4" />
-                  Contact Support
-                </Button>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
     </>
