@@ -1,6 +1,5 @@
 import { Helmet } from "react-helmet";
 import SearchForm from "@/components/search-form";
-import RecentOrders from "@/components/recent-orders";
 
 export default function HomePage() {
   return (
@@ -21,8 +20,6 @@ export default function HomePage() {
           </div>
           
           <SearchForm />
-          
-          <RecentOrders />
         </div>
       </div>
     </>

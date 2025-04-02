@@ -28,7 +28,7 @@ const airtableOrderSchema = z.object({
     customerName: z.string().optional().default("Customer"),
     shippingAddress: z.string().optional().default("123 Main St, City, Country"),
     shippingMethod: z.string().optional().default("Standard Shipping"),
-    trackingNumber: z.string().optional().nullable(),
+    trackingNumber: z.string().nullable().optional().default(null),
     subtotal: z.string().optional().default("$0.00"),
     shipping: z.string().optional().default("$0.00"),
     tax: z.string().optional().default("$0.00"),
@@ -120,14 +120,15 @@ function convertAirtableOrderToOrder(airtableOrder: AirtableOrder): Order {
       ];
 
   // Create the order object with properly typed field values
-  const order: InsertOrder = {
+  const order = {
+    id: 0, // Add id to match the Order type
     orderNumber: fields.orderNumber,
     status: fields.status || "Processing",
     orderDate: new Date(fields.orderDate || new Date().toISOString()),
     customerName: fields.customerName || "Customer",
     shippingAddress: fields.shippingAddress || "123 Main St, City, Country",
     shippingMethod: fields.shippingMethod || "Standard Shipping",
-    trackingNumber: fields.trackingNumber || null,
+    trackingNumber: fields.trackingNumber ?? null,
     subtotal: fields.subtotal || "$0.00",
     shipping: fields.shipping || "$0.00",
     tax: fields.tax || "$0.00",
@@ -137,6 +138,6 @@ function convertAirtableOrderToOrder(airtableOrder: AirtableOrder): Order {
     airtableId: airtableOrder.id,
   };
 
-  // Add id to match the Order type
-  return { ...order, id: 0 };
+  // Return the order with correct typing
+  return order as Order;
 }
