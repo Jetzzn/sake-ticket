@@ -91,7 +91,7 @@ export default function OrderQRCode({ order }: OrderQRCodeProps) {
               alt={`QR Code for Order ${order.orderNumber}`}
               className="h-40 w-40 mb-3 border border-gray-200 rounded"
             />
-            <span className="text-sm text-gray-500 mb-1">Scan to access order information</span>
+
             <span className="text-xs font-mono font-semibold text-gray-700">Order: {order.orderNumber}</span>
           </div>
           
