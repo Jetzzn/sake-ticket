@@ -85,7 +85,8 @@ export default function OrderPage() {
               </li>
             </ol>
           </nav>
-          
+          {/* QR Code */}
+            <OrderQRCode order={order} />
           {/* Order Details */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
             <div className="px-4 py-5 sm:px-6">
@@ -136,8 +137,7 @@ export default function OrderPage() {
             </div>
           </div>
           
-          {/* QR Code */}
-          <OrderQRCode order={order} />
+  
 
         </div>
       </div>
