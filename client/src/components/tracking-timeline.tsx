@@ -26,15 +26,26 @@ export default function TrackingTimeline({ order }: TrackingTimelineProps) {
     }
   };
   
-  // If no tracking updates are available, don't show the component
-  if (!trackingUpdates.length) {
-    return null;
-  }
+  // Default updates if none are provided
+  const defaultUpdates: TrackingUpdate[] = [
+    {
+      status: "Order shipped",
+      date: new Date().toLocaleDateString(),
+      timestamp: new Date().toISOString(),
+      icon: "package"
+    }
+  ];
+  
+  const updates = trackingUpdates.length > 0 ? trackingUpdates : defaultUpdates;
   
   // Sort updates by timestamp in descending order (newest first)
-  const sortedUpdates = [...trackingUpdates].sort((a, b) => {
+  const sortedUpdates = [...updates].sort((a, b) => {
     return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
   });
+
+  if (!sortedUpdates.length) {
+    return null;
+  }
 
   return (
     <div className="mt-8 bg-white shadow sm:rounded-lg">
