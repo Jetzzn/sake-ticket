@@ -58,8 +58,13 @@ export async function fetchOrderFromAirtable(orderNumber: string): Promise<Order
   }
 }
 
-// Function to fetch an order from Airtable by phone number
-export async function fetchOrderFromAirtableByPhone(phoneNumber: string): Promise<Order | null> {
+// Define an array version of the schema
+const airtableOrdersSchema = z.object({
+  records: z.array(airtableOrderSchema),
+});
+
+// Function to fetch all orders from Airtable by phone number
+export async function fetchOrdersFromAirtableByPhone(phoneNumber: string): Promise<Order[]> {
   try {
     const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(TABLE_NAME)}?filterByFormula={${PHONE_FIELD_NAME}}="${encodeURIComponent(phoneNumber)}"`;
     
@@ -77,14 +82,41 @@ export async function fetchOrderFromAirtableByPhone(phoneNumber: string): Promis
     const data = await response.json();
     
     if (!data.records || data.records.length === 0) {
-      return null;
+      return [];
     }
 
-    // Validate the response
-    const validatedRecord = airtableOrderSchema.parse(data.records[0]);
+    // Convert each record to our Order format
+    const orders: Order[] = [];
     
-    // Convert to our Order format
-    return convertAirtableOrderToOrder(validatedRecord);
+    for (const record of data.records) {
+      try {
+        const validatedRecord = airtableOrderSchema.parse(record);
+        const order = convertAirtableOrderToOrder(validatedRecord);
+        orders.push(order);
+      } catch (error) {
+        console.error('Error parsing Airtable record:', error);
+        // Continue with the next record if one fails
+      }
+    }
+    
+    return orders;
+  } catch (error) {
+    console.error('Error fetching orders from Airtable by phone:', error);
+    throw error;
+  }
+}
+
+// Function to fetch a single order from Airtable by phone number (for backward compatibility)
+export async function fetchOrderFromAirtableByPhone(phoneNumber: string): Promise<Order | null> {
+  try {
+    const orders = await fetchOrdersFromAirtableByPhone(phoneNumber);
+    
+    if (orders.length === 0) {
+      return null;
+    }
+    
+    // Return the first order found (for backward compatibility)
+    return orders[0];
   } catch (error) {
     console.error('Error fetching order from Airtable by phone:', error);
     throw error;

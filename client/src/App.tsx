@@ -12,7 +12,8 @@ function App() {
         <Switch>
           <Route path="/" component={HomePage} />
           <Route path="/error" component={ErrorPage} />
-          <Route path="/order/:orderNumber" component={OrderPage} />
+          <Route path="/order/:phoneNumber/:orderNumber" component={OrderPage} />
+          <Route path="/order/:phoneNumber" component={OrderPage} />
           <Route component={NotFound} />
         </Switch>
       </main>

@@ -9,7 +9,7 @@ import {
   type RecentOrder,
   type InsertRecentOrder
 } from "@shared/schema";
-import { fetchOrderFromAirtable, fetchOrderFromAirtableByPhone } from "./airtable";
+import { fetchOrderFromAirtable, fetchOrderFromAirtableByPhone, fetchOrdersFromAirtableByPhone } from "./airtable";
 
 // Define the storage interface
 export interface IStorage {
@@ -22,6 +22,7 @@ export interface IStorage {
   getOrder(id: number): Promise<Order | undefined>;
   getOrderByOrderNumber(orderNumber: string): Promise<Order | undefined>;
   getOrderByPhoneNumber(phoneNumber: string): Promise<Order | undefined>;
+  getOrdersByPhoneNumber(phoneNumber: string): Promise<Order[]>;
   createOrder(order: InsertOrder): Promise<Order>;
   updateOrder(id: number, order: Partial<InsertOrder>): Promise<Order | undefined>;
   
@@ -124,6 +125,41 @@ export class MemStorage implements IStorage {
       return undefined;
     } catch (error) {
       console.error(`Error fetching order with phone number ${phoneNumber} from Airtable:`, error);
+      throw error;
+    }
+  }
+  
+  async getOrdersByPhoneNumber(phoneNumber: string): Promise<Order[]> {
+    // First, check our in-memory storage
+    const existingOrders = Array.from(this.orders.values()).filter(
+      (order) => order.phoneNumber === phoneNumber
+    );
+
+    if (existingOrders.length > 0) {
+      return existingOrders;
+    }
+
+    // If no orders exist in memory, fetch from Airtable by phone number
+    try {
+      const airtableOrders = await fetchOrdersFromAirtableByPhone(phoneNumber);
+      
+      if (airtableOrders.length === 0) {
+        return [];
+      }
+      
+      // Store all orders in memory for future requests
+      const storedOrders: Order[] = [];
+      
+      for (const airtableOrder of airtableOrders) {
+        const id = this.orderCurrentId++;
+        const order: Order = { ...airtableOrder, id };
+        this.orders.set(id, order);
+        storedOrders.push(order);
+      }
+      
+      return storedOrders;
+    } catch (error) {
+      console.error(`Error fetching orders with phone number ${phoneNumber} from Airtable:`, error);
       throw error;
     }
   }

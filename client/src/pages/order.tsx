@@ -2,24 +2,48 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
-import { Home, ChevronRight } from "lucide-react";
+import { Home, ChevronRight, Calendar, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import Loading from "@/components/loading";
 import OrderQRCode from "@/components/order-qr-code";
 import { type Order } from "@shared/schema";
 
+// Helper function to format date
+function formatDate(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('th-TH', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
+  } catch (e) {
+    return dateString;
+  }
+}
+
 export default function OrderPage() {
-  const { orderNumber } = useParams();
+  const { phoneNumber, orderNumber } = useParams();
   const [, navigate] = useLocation();
   
-  // Fetch order data - try to fetch by phone number first
+  // If we have both phone number and order number, fetch that specific order
+  // Otherwise, fetch all orders for this phone number
+  const isMultipleOrders = phoneNumber && !orderNumber;
+  
   const { 
-    data: order, 
+    data, 
     isLoading, 
     isError, 
     error
-  } = useQuery<Order>({
-    queryKey: [`/api/orders/phone/${orderNumber}`],
+  } = useQuery({
+    queryKey: [
+      phoneNumber && orderNumber 
+        ? `/api/orders/phone/${phoneNumber}/${orderNumber}` 
+        : `/api/orders/phone/${phoneNumber}`
+    ],
     retry: 1
   });
   
@@ -34,12 +58,12 @@ export default function OrderPage() {
       navigate("/error", { 
         replace: true, 
         state: { 
-          orderNumber,
+          orderNumber: phoneNumber,
           error: errorMsg
         }
       });
     }
-  }, [isError, navigate, orderNumber, error]);
+  }, [isError, navigate, phoneNumber, error]);
   
   // Show loading state while fetching
   if (isLoading) {
@@ -47,15 +71,124 @@ export default function OrderPage() {
   }
   
   // If no order is found, redirect to error page
-  if (!order) {
+  if (!data) {
     return null; // Will be handled by the useEffect above
   }
+  
+  // If we're showing multiple orders (or even a single order from a phone number search)
+  if (Array.isArray(data)) {
+    return (
+      <>
+        <Helmet>
+          <title>คำสั่งซื้อทั้งหมด - ระบบติดตามคำสั่งซื้อ</title>
+          <meta name="description" content={`รายการคำสั่งซื้อสำหรับเบอร์โทรศัพท์ ${phoneNumber}`} />
+        </Helmet>
+        
+        <div className="py-10">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Breadcrumbs */}
+            <nav className="flex mb-6" aria-label="Breadcrumb">
+              <ol className="flex items-center space-x-4">
+                <li>
+                  <div>
+                    <Link href="/" className="text-gray-400 hover:text-gray-500">
+                      <Home className="h-5 w-5" />
+                      <span className="sr-only">หน้าหลัก</span>
+                    </Link>
+                  </div>
+                </li>
+                <li>
+                  <div className="flex items-center">
+                    <ChevronRight className="text-gray-400 h-5 w-5" />
+                    <span className="ml-4 text-sm font-medium text-gray-500">รายการคำสั่งซื้อ</span>
+                  </div>
+                </li>
+                <li>
+                  <div className="flex items-center">
+                    <ChevronRight className="text-gray-400 h-5 w-5" />
+                    <span className="ml-4 text-sm font-medium text-gray-900">{phoneNumber}</span>
+                  </div>
+                </li>
+              </ol>
+            </nav>
+            
+            <h1 className="text-2xl font-bold text-gray-900 mb-6">คำสั่งซื้อสำหรับเบอร์โทรศัพท์ {phoneNumber}</h1>
+            
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
+              {data.map((order: Order) => (
+                <Card key={order.orderNumber} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h2 className="text-lg font-semibold mb-2">
+                          คำสั่งซื้อ #{order.orderNumber}
+                        </h2>
+                        <p className="text-sm text-gray-500 mb-4">{order.recipientName}</p>
+                        
+                        <div className="flex items-center text-sm text-gray-500 mb-1">
+                          <Calendar className="h-4 w-4 mr-2" />
+                          <span>วันที่สั่งซื้อ: ไม่มีข้อมูล</span>
+                        </div>
+                        
+                        <div className="flex items-center text-sm text-gray-500 mb-4">
+                          <Package className="h-4 w-4 mr-2" />
+                          <span>สถานะ: {
+                            order.orderStatus === "CANCELED" ? "ยกเลิกแล้ว" :
+                            order.orderStatus === "EXPIRED" ? "หมดอายุ" :
+                            order.paymentStatus === "PAID" ? "ชำระเงินแล้ว" :
+                            "รอดำเนินการ"
+                          }</span>
+                        </div>
+                      </div>
+                      
+                      {/* Status badge */}
+                      <div className={`text-xs font-medium rounded-full px-2.5 py-1 ${
+                        order.orderStatus === "CANCELED" ? "bg-red-100 text-red-800" :
+                        order.orderStatus === "EXPIRED" ? "bg-gray-100 text-gray-800" :
+                        order.paymentStatus === "PAID" ? "bg-green-100 text-green-800" :
+                        "bg-yellow-100 text-yellow-800"
+                      }`}>
+                        {
+                          order.orderStatus === "CANCELED" ? "ยกเลิกแล้ว" :
+                          order.orderStatus === "EXPIRED" ? "หมดอายุ" :
+                          order.paymentStatus === "PAID" || 
+                          order.paymentStatus === "PAYMENT_LS_RLP" || 
+                          order.paymentStatus === "PAYMENT_LS_QR_PROMPTPAY" ? "ชำระเงินแล้ว" :
+                          "รอชำระเงิน"
+                        }
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="text-lg font-bold">{order.totalPrice} บาท</p>
+                        </div>
+                        <Link href={`/order/${phoneNumber}/${order.orderNumber}`}>
+                          <Button variant="outline" size="sm">
+                            ดูรายละเอียด
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+  
+  // Single order mode
+  const order = Array.isArray(data) ? data[0] : data;
 
   return (
     <>
       <Helmet>
-        <title>Order {orderNumber} - Order Tracker</title>
-        <meta name="description" content={`Order details for ${orderNumber}`} />
+        <title>คำสั่งซื้อ {order.orderNumber} - ระบบติดตามคำสั่งซื้อ</title>
+        <meta name="description" content={`รายละเอียดคำสั่งซื้อหมายเลข ${order.orderNumber}`} />
       </Helmet>
       
       <div className="py-10">
@@ -74,13 +207,13 @@ export default function OrderPage() {
               <li>
                 <div className="flex items-center">
                   <ChevronRight className="text-gray-400 h-5 w-5" />
-                  <span className="ml-4 text-sm font-medium text-gray-500">Order Details</span>
+                  <span className="ml-4 text-sm font-medium text-gray-500">รายละเอียดคำสั่งซื้อ</span>
                 </div>
               </li>
               <li>
                 <div className="flex items-center">
                   <ChevronRight className="text-gray-400 h-5 w-5" />
-                  <span className="ml-4 text-sm font-medium text-gray-900 font-mono">{orderNumber}</span>
+                  <span className="ml-4 text-sm font-medium text-gray-900 font-mono">{order.orderNumber}</span>
                 </div>
               </li>
             </ol>
@@ -105,7 +238,7 @@ export default function OrderPage() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-red-700">
-                    <span className="font-medium">Order Canceled:</span> This order has been canceled.
+                    <span className="font-medium">คำสั่งซื้อถูกยกเลิก:</span> คำสั่งซื้อนี้ได้ถูกยกเลิกแล้ว
                   </p>
                 </div>
               </div>
@@ -123,7 +256,7 @@ export default function OrderPage() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-gray-700">
-                    <span className="font-medium">Order Expired:</span> This order has expired.
+                    <span className="font-medium">คำสั่งซื้อหมดอายุ:</span> คำสั่งซื้อนี้ได้หมดอายุแล้ว
                   </p>
                 </div>
               </div>
@@ -145,7 +278,7 @@ export default function OrderPage() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-yellow-700">
-                    <span className="font-medium">Please Note:</span> Payment is required to view complete order details.
+                    <span className="font-medium">โปรดทราบ:</span> จำเป็นต้องชำระเงินก่อนเพื่อดูรายละเอียดคำสั่งซื้อทั้งหมด
                   </p>
                 </div>
               </div>
@@ -155,21 +288,21 @@ export default function OrderPage() {
           {/* Order Details (Basic information for all orders) */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
             <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">Order Details</h3>
-              <p className="mt-1 max-w-2xl text-sm text-gray-500">Information about this order.</p>
+              <h3 className="text-lg leading-6 font-medium text-gray-900">รายละเอียดคำสั่งซื้อ</h3>
+              <p className="mt-1 max-w-2xl text-sm text-gray-500">ข้อมูลเกี่ยวกับคำสั่งซื้อนี้</p>
             </div>
             <div className="border-t border-gray-200">
               <dl>
                 <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Order number</dt>
+                  <dt className="text-sm font-medium text-gray-500">หมายเลขคำสั่งซื้อ</dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 font-mono">{order.orderNumber}</dd>
                 </div>
                 <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Recipient name</dt>
+                  <dt className="text-sm font-medium text-gray-500">ชื่อผู้รับ</dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{order.recipientName}</dd>
                 </div>
                 <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Phone number</dt>
+                  <dt className="text-sm font-medium text-gray-500">หมายเลขโทรศัพท์</dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{order.phoneNumber}</dd>
                 </div>
                 {(order.paymentStatus === "PAYMENT_LS_RLP" || 
@@ -177,12 +310,12 @@ export default function OrderPage() {
                   order.paymentStatus === "PAID") && (
                   <>
                     <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Email</dt>
+                      <dt className="text-sm font-medium text-gray-500">อีเมล</dt>
                       <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{order.email}</dd>
                     </div>
                     <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Total price</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 font-medium">{order.totalPrice}</dd>
+                      <dt className="text-sm font-medium text-gray-500">ราคารวม</dt>
+                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 font-medium">{order.totalPrice} บาท</dd>
                     </div>
                   </>
                 )}
@@ -197,8 +330,8 @@ export default function OrderPage() {
             /* Order Items Summary */
             <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
               <div className="px-4 py-5 sm:px-6">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">Order Items</h3>
-                <p className="mt-1 max-w-2xl text-sm text-gray-500">Summary of ordered items.</p>
+                <h3 className="text-lg leading-6 font-medium text-gray-900">รายการสินค้า</h3>
+                <p className="mt-1 max-w-2xl text-sm text-gray-500">สรุปรายการสินค้าที่สั่งซื้อ</p>
               </div>
               <div className="border-t border-gray-200">
                 <div className="px-6 py-5">
@@ -206,7 +339,7 @@ export default function OrderPage() {
                     {/* Remove quotes from the string if it starts and ends with quotes */}
                     {typeof order.orderItemsSummary === 'string' 
                       ? order.orderItemsSummary.replace(/^"|"$/g, '') 
-                      : 'No items data available'}
+                      : 'ไม่มีข้อมูลรายการสินค้า'}
                   </div>
                 </div>
               </div>
