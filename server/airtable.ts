@@ -1,40 +1,16 @@
 import { z } from 'zod';
 import { InsertOrder, Order, OrderItem, TrackingUpdate } from '@shared/schema';
 
-// Define the item schema
-const airtableItemSchema = z.object({
-  productName: z.string(),
-  sku: z.string(),
-  quantity: z.number(),
-  price: z.string(),
-  total: z.string(),
-});
-
-// Define the tracking update schema
-const airtableTrackingUpdateSchema = z.object({
-  status: z.string(),
-  date: z.string(),
-  timestamp: z.string(),
-  icon: z.string(),
-});
-
-// Define the Airtable record schema
+// Define the Airtable record schema based on actual Airtable fields
 const airtableOrderSchema = z.object({
   id: z.string(),
   fields: z.object({
     orderNumber: z.string(),
-    status: z.string().optional().default("Processing"),
-    orderDate: z.string().optional().default(new Date().toISOString()),
-    customerName: z.string().optional().default("Customer"),
-    shippingAddress: z.string().optional().default("123 Main St, City, Country"),
-    shippingMethod: z.string().optional().default("Standard Shipping"),
-    trackingNumber: z.string().nullable().optional().default(null),
-    subtotal: z.string().optional().default("$0.00"),
-    shipping: z.string().optional().default("$0.00"),
-    tax: z.string().optional().default("$0.00"),
-    total: z.string().optional().default("$0.00"),
-    items: z.array(airtableItemSchema).optional().default([]),
-    trackingUpdates: z.array(airtableTrackingUpdateSchema).optional().default([]),
+    recipientName: z.string().optional().default(""),
+    phoneNumber: z.string().optional().default(""),
+    email: z.string().optional().default(""),
+    totalPrice: z.string().optional().default("0"),
+    orderItemsSummary: z.string().optional().default(""),
   }),
 });
 
@@ -83,61 +59,63 @@ export async function fetchOrderFromAirtable(orderNumber: string): Promise<Order
 function convertAirtableOrderToOrder(airtableOrder: AirtableOrder): Order {
   const fields = airtableOrder.fields;
   
-  // Create sample items if not available
-  const items: OrderItem[] = (fields.items && fields.items.length > 0) 
-    ? fields.items.map(item => ({
-        productName: item.productName,
-        sku: item.sku,
-        quantity: item.quantity,
-        price: item.price,
-        total: item.total,
-      }))
-    : [
-        {
-          productName: "Sample Product",
-          sku: "SKU-12345",
-          quantity: 1,
-          price: "$24.99",
-          total: "$24.99"
-        }
-      ];
+  // Create items from orderItemsSummary if available
+  let items: OrderItem[] = [];
+  if (fields.orderItemsSummary) {
+    // Create a single item with the summary
+    items = [
+      {
+        productName: fields.orderItemsSummary,
+        sku: "SKU-" + fields.orderNumber,
+        quantity: 1,
+        price: fields.totalPrice || "0",
+        total: fields.totalPrice || "0"
+      }
+    ];
+  } else {
+    // Default item if no order items summary
+    items = [
+      {
+        productName: "Order Item",
+        sku: "SKU-" + fields.orderNumber,
+        quantity: 1,
+        price: fields.totalPrice || "0",
+        total: fields.totalPrice || "0"
+      }
+    ];
+  }
 
-  // Convert tracking updates if they exist
-  const trackingUpdates: TrackingUpdate[] = (fields.trackingUpdates && fields.trackingUpdates.length > 0)
-    ? fields.trackingUpdates.map(update => ({
-        status: update.status,
-        date: update.date,
-        timestamp: update.timestamp,
-        icon: update.icon,
-      }))
-    : [
-        {
-          status: "Order Received",
-          date: new Date().toLocaleDateString(),
-          timestamp: new Date().toISOString(),
-          icon: "package" 
-        }
-      ];
+  // Create a default tracking update
+  const trackingUpdates: TrackingUpdate[] = [
+    {
+      status: "Order Received",
+      date: new Date().toLocaleDateString(),
+      timestamp: new Date().toISOString(),
+      icon: "package" 
+    }
+  ];
 
-  // Create the order object with properly typed field values
-  const order = {
-    id: 0, // Add id to match the Order type
+  // Create the InsertOrder object with properly mapped fields
+  const insertOrder: InsertOrder = {
     orderNumber: fields.orderNumber,
-    status: fields.status || "Processing",
-    orderDate: new Date(fields.orderDate || new Date().toISOString()),
-    customerName: fields.customerName || "Customer",
-    shippingAddress: fields.shippingAddress || "123 Main St, City, Country",
-    shippingMethod: fields.shippingMethod || "Standard Shipping",
-    trackingNumber: fields.trackingNumber ?? null,
-    subtotal: fields.subtotal || "$0.00",
-    shipping: fields.shipping || "$0.00",
-    tax: fields.tax || "$0.00",
-    total: fields.total || "$0.00",
+    status: "Processing", // Default status
+    orderDate: new Date(), // Current date as default
+    customerName: fields.recipientName || "Customer",
+    shippingAddress: fields.email || "-",
+    shippingMethod: "Standard Shipping", // Default shipping method
+    trackingNumber: fields.phoneNumber ? fields.phoneNumber : null, // Ensure it's string | null
+    subtotal: fields.totalPrice || "0",
+    shipping: "0",
+    tax: "0",
+    total: fields.totalPrice || "0",
     items: items as unknown as any, // Cast to satisfy jsonb type
     trackingUpdates: trackingUpdates as unknown as any, // Cast to satisfy jsonb type
     airtableId: airtableOrder.id,
   };
 
-  // Return the order with correct typing
-  return order as Order;
+  // Force cast to Order type
+  return { 
+    id: 0,
+    ...insertOrder
+  } as unknown as Order;
 }
