@@ -23,28 +23,28 @@ const airtableOrderSchema = z.object({
   id: z.string(),
   fields: z.object({
     orderNumber: z.string(),
-    status: z.string().optional().default("Processing"),
-    orderDate: z.string().optional().default(new Date().toISOString()),
-    customerName: z.string().optional().default("Customer"),
-    shippingAddress: z.string().optional().default("123 Main St, City, Country"),
-    shippingMethod: z.string().optional().default("Standard Shipping"),
-    trackingNumber: z.string().optional().nullable(),
-    subtotal: z.string().optional().default("$0.00"),
-    shipping: z.string().optional().default("$0.00"),
-    tax: z.string().optional().default("$0.00"),
-    total: z.string().optional().default("$0.00"),
-    items: z.array(airtableItemSchema).optional().default([]),
-    trackingUpdates: z.array(airtableTrackingUpdateSchema).optional().default([]),
+    status: z.string(),
+    orderDate: z.string(),
+    customerName: z.string(),
+    shippingAddress: z.string(),
+    shippingMethod: z.string(),
+    trackingNumber: z.string().nullable(),
+    subtotal: z.string(),
+    shipping: z.string(),
+    tax: z.string(),
+    total: z.string(),
+    items: z.array(airtableItemSchema).optional(),
+    trackingUpdates: z.array(airtableTrackingUpdateSchema).optional(),
   }),
 });
 
 type AirtableOrder = z.infer<typeof airtableOrderSchema>;
 
-// Airtable API credentials
-const AIRTABLE_API_KEY = "patTHltTr3vda9aDG.2df10985569ad6dca6d185bbf3f99e94e8c1d92e0dcef804dea82709627a5180";
-const AIRTABLE_BASE_ID = "appTywnuzq68a91t9";
-const TABLE_NAME = "Table 1";
-const FIELD_NAME = "orderNumber";
+// Airtable API credentials from environment variables
+const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY || "";
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID || "";
+const TABLE_NAME = process.env.TABLE_NAME || "Table 1";
+const FIELD_NAME = process.env.FIELD_NAME || "orderNumber";
 
 // Function to fetch an order from Airtable by order number
 export async function fetchOrderFromAirtable(orderNumber: string): Promise<Order | null> {
@@ -83,7 +83,7 @@ export async function fetchOrderFromAirtable(orderNumber: string): Promise<Order
 function convertAirtableOrderToOrder(airtableOrder: AirtableOrder): Order {
   const fields = airtableOrder.fields;
   
-  // Create sample items if not available
+  // Process items from Airtable
   const items: OrderItem[] = (fields.items && fields.items.length > 0) 
     ? fields.items.map(item => ({
         productName: item.productName,
@@ -92,17 +92,9 @@ function convertAirtableOrderToOrder(airtableOrder: AirtableOrder): Order {
         price: item.price,
         total: item.total,
       }))
-    : [
-        {
-          productName: "Sample Product",
-          sku: "SKU-12345",
-          quantity: 1,
-          price: "$24.99",
-          total: "$24.99"
-        }
-      ];
+    : [];
 
-  // Convert tracking updates if they exist
+  // Process tracking updates from Airtable
   const trackingUpdates: TrackingUpdate[] = (fields.trackingUpdates && fields.trackingUpdates.length > 0)
     ? fields.trackingUpdates.map(update => ({
         status: update.status,
@@ -110,33 +102,24 @@ function convertAirtableOrderToOrder(airtableOrder: AirtableOrder): Order {
         timestamp: update.timestamp,
         icon: update.icon,
       }))
-    : [
-        {
-          status: "Order Received",
-          date: new Date().toLocaleDateString(),
-          timestamp: new Date().toISOString(),
-          icon: "package" 
-        }
-      ];
+    : [];
 
-  // Create the order object with properly typed field values
-  const order: InsertOrder = {
+  // Create the order object with data from Airtable
+  return {
+    id: 0, // Will be replaced by storage.ts
     orderNumber: fields.orderNumber,
-    status: fields.status || "Processing",
-    orderDate: new Date(fields.orderDate || new Date().toISOString()),
-    customerName: fields.customerName || "Customer",
-    shippingAddress: fields.shippingAddress || "123 Main St, City, Country",
-    shippingMethod: fields.shippingMethod || "Standard Shipping",
-    trackingNumber: fields.trackingNumber || null,
-    subtotal: fields.subtotal || "$0.00",
-    shipping: fields.shipping || "$0.00",
-    tax: fields.tax || "$0.00",
-    total: fields.total || "$0.00",
-    items: items as unknown as any, // Cast to satisfy jsonb type
-    trackingUpdates: trackingUpdates as unknown as any, // Cast to satisfy jsonb type
+    status: fields.status,
+    orderDate: new Date(fields.orderDate),
+    customerName: fields.customerName,
+    shippingAddress: fields.shippingAddress,
+    shippingMethod: fields.shippingMethod,
+    trackingNumber: fields.trackingNumber,
+    subtotal: fields.subtotal,
+    shipping: fields.shipping,
+    tax: fields.tax,
+    total: fields.total,
+    items: items as unknown as any,
+    trackingUpdates: trackingUpdates as unknown as any,
     airtableId: airtableOrder.id,
   };
-
-  // Add id to match the Order type
-  return { ...order, id: 0 };
 }
