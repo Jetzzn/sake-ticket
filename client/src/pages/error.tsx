@@ -53,34 +53,11 @@ export default function ErrorPage() {
                     : errorMessage}
                 </p>
                 <p>
-                  Please check your phone number and try again
+                  Please check your phone number or if it is correct please wait for about 15 minutes and come back to the link again.
                 </p>
               </div>
 
-              <form onSubmit={handleSearch} className="mt-6 mb-2">
-                <div className="flex w-full max-w-sm mx-auto items-center space-x-2">
-                  <Input 
-                    type="text" 
-                    placeholder="Enter your phone number" 
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                    className="text-center"
-                  />
-                  <Button type="submit" disabled={!searchValue.trim()}>
-                    <Phone className="h-4 w-4 mr-2" />
-                    Search
-                  </Button>
-                </div>
-              </form>
             </CardContent>
-            <CardFooter className="justify-center border-t pt-4 pb-6">
-              <Link href="/">
-                <Button variant="outline" className="flex items-center mx-auto">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to Home
-                </Button>
-              </Link>
-            </CardFooter>
           </Card>
         </div>
       </div>

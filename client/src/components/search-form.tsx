@@ -18,8 +18,8 @@ import { useToast } from "@/hooks/use-toast";
 // Schema for phone number validation
 const searchSchema = z.object({
   phoneNumber: z.string()
-    .min(1, "หมายเลขโทรศัพท์จำเป็นต้องระบุ")
-    .regex(/^[0-9]+$/, "รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง")
+    .min(1, "Phone number is required.")
+    .regex(/^[0-9]+$/, "Invalid phone number format")
 });
 
 type SearchFormValues = z.infer<typeof searchSchema>;
@@ -56,14 +56,14 @@ export default function SearchForm() {
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>หมายเลขโทรศัพท์</FormLabel>
+                <FormLabel>Phone Number</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Phone className="h-4 w-4 text-gray-400" />
                     </div>
                     <Input
-                      placeholder="กรุณาใส่หมายเลขโทรศัพท์ (เช่น 0812345678)"
+                      placeholder="Please enter your phone number"
                       className="pl-10"
                       {...field}
                     />
@@ -78,7 +78,7 @@ export default function SearchForm() {
               type="submit" 
               disabled={isSubmitting}
             >
-              {isSubmitting ? "กำลังค้นหา..." : "ค้นหาคำสั่งซื้อ"}
+              {isSubmitting ? "Searching..." : "Search"}
             </Button>
           </div>
         </form>

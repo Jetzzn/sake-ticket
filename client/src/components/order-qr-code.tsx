@@ -51,15 +51,7 @@ export default function OrderQRCode({ order }: OrderQRCodeProps) {
         ctx.font = "bold 24px monospace";
         ctx.fillText(`Order: ${order.orderNumber}`, canvas.width / 2, 480);
         
-        // Add scan message
-        ctx.font = "16px Arial";
-        ctx.fillStyle = "#6b7280";
-        ctx.fillText("Scan this code to access order information", canvas.width / 2, 520);
-        
-        // Add company info
-        ctx.font = "14px Arial";
-        ctx.fillStyle = "#9ca3af";
-        ctx.fillText("Generated on " + new Date().toLocaleDateString(), canvas.width / 2, 600);
+
         
         // Create a download link
         const dataUrl = canvas.toDataURL("image/png");
