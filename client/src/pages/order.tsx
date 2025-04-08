@@ -133,28 +133,22 @@ export default function OrderPage() {
                         <div className="flex items-center text-sm text-gray-500 mb-4">
                           <Package className="h-4 w-4 mr-2" />
                           <span>Status: {
-                            order.orderStatus === "CANCELED" ? "Canceled" :
-                            order.orderStatus === "EXPIRED" ? "Expired" :
                             order.paymentStatus === "PAID" ? "Paid" :
                             order.paymentStatus === "REFUND" ? "Refunded" :
                             order.paymentStatus === "NO_PAYMENT" ? "No Payment" :
-                            "Pending"
+                            "Pending Payment"
                           }</span>
                         </div>
                       </div>
                       
                       {/* Status badge */}
                       <div className={`text-xs font-medium rounded-full px-2.5 py-1 ${
-                        order.orderStatus === "CANCELED" ? "bg-red-100 text-red-800" :
-                        order.orderStatus === "EXPIRED" ? "bg-gray-100 text-gray-800" :
                         order.paymentStatus === "PAID" ? "bg-green-100 text-green-800" :
                         order.paymentStatus === "REFUND" ? "bg-blue-100 text-blue-800" :
                         order.paymentStatus === "NO_PAYMENT" ? "bg-yellow-100 text-yellow-800" :
                         "bg-yellow-100 text-yellow-800"
                       }`}>
                         {
-                          order.orderStatus === "CANCELED" ? "Canceled" :
-                          order.orderStatus === "EXPIRED" ? "Expired" :
                           order.paymentStatus === "PAID" ? "Paid" :
                           order.paymentStatus === "REFUND" ? "Refunded" :
                           order.paymentStatus === "NO_PAYMENT" ? "No Payment" :
@@ -229,41 +223,7 @@ export default function OrderPage() {
             <OrderQRCode order={order} />
           )}
 
-          {/* Order Status Alert */}
-          {order.orderStatus === "CANCELED" && (
-            <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-8">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-red-700">
-                    <span className="font-medium">Order Canceled:</span> This order has been canceled
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {/* Expired Order Alert */}
-          {order.orderStatus === "EXPIRED" && (
-            <div className="bg-gray-50 border-l-4 border-gray-400 p-4 mb-8">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-gray-700">
-                    <span className="font-medium">Order Expired:</span> This order has expired
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Note: We're no longer checking orderStatus, only paymentStatus */}
           
           {/* Refund Status Alert */}
           {order.paymentStatus === "REFUND" && (
@@ -284,10 +244,7 @@ export default function OrderPage() {
           )}
 
           {/* No Payment Status Alert */}
-          {order.orderStatus !== "CANCELED" && 
-           order.orderStatus !== "EXPIRED" &&
-           order.paymentStatus !== "PAID" &&
-           order.paymentStatus !== "REFUND" && (
+          {order.paymentStatus === "NO_PAYMENT" && (
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8">
               <div className="flex">
                 <div className="flex-shrink-0">
