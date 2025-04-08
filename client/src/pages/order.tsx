@@ -87,7 +87,7 @@ export default function OrderPage() {
         <div className="py-10">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Breadcrumbs */}
-            <nav className="flex mb-6" aria-label="Breadcrumb">
+            {/* <nav className="flex mb-6" aria-label="Breadcrumb">
               <ol className="flex items-center space-x-4">
                 <li>
                   <div>
@@ -110,7 +110,7 @@ export default function OrderPage() {
                   </div>
                 </li>
               </ol>
-            </nav>
+            </nav> */}
             
             <h1 className="text-2xl font-bold text-gray-900 mb-6">Orders for phone number {phoneNumber}</h1>
             
@@ -194,7 +194,7 @@ export default function OrderPage() {
       <div className="py-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumbs */}
-          <nav className="flex mb-6" aria-label="Breadcrumb">
+          {/* <nav className="flex mb-6" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-4">
               <li>
                 <div>
@@ -217,7 +217,7 @@ export default function OrderPage() {
                 </div>
               </li>
             </ol>
-          </nav>
+          </nav> */}
 
           {/* Show QR Code at the top for paid orders */}
           {(order.paymentStatus === "PAYMENT_LS_RLP" || 
@@ -278,7 +278,7 @@ export default function OrderPage() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-yellow-700">
-                    <span className="font-medium">Please Note:</span> Payment is required to view complete order details
+                    <span className="font-medium">Please Note:</span> Payment is required to view full order details or if you have already paid please wait 15 minutes and then come back to the link.
                   </p>
                 </div>
               </div>
