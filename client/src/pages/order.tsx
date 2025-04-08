@@ -136,6 +136,8 @@ export default function OrderPage() {
                             order.orderStatus === "CANCELED" ? "Canceled" :
                             order.orderStatus === "EXPIRED" ? "Expired" :
                             order.paymentStatus === "PAID" ? "Paid" :
+                            order.paymentStatus === "REFUND" ? "Refunded" :
+                            order.paymentStatus === "NO_PAYMENT" ? "No Payment" :
                             "Pending"
                           }</span>
                         </div>
@@ -146,14 +148,16 @@ export default function OrderPage() {
                         order.orderStatus === "CANCELED" ? "bg-red-100 text-red-800" :
                         order.orderStatus === "EXPIRED" ? "bg-gray-100 text-gray-800" :
                         order.paymentStatus === "PAID" ? "bg-green-100 text-green-800" :
+                        order.paymentStatus === "REFUND" ? "bg-blue-100 text-blue-800" :
+                        order.paymentStatus === "NO_PAYMENT" ? "bg-yellow-100 text-yellow-800" :
                         "bg-yellow-100 text-yellow-800"
                       }`}>
                         {
                           order.orderStatus === "CANCELED" ? "Canceled" :
                           order.orderStatus === "EXPIRED" ? "Expired" :
-                          order.paymentStatus === "PAID" || 
-                          order.paymentStatus === "PAYMENT_LS_RLP" || 
-                          order.paymentStatus === "PAYMENT_LS_QR_PROMPTPAY" ? "Paid" :
+                          order.paymentStatus === "PAID" ? "Paid" :
+                          order.paymentStatus === "REFUND" ? "Refunded" :
+                          order.paymentStatus === "NO_PAYMENT" ? "No Payment" :
                           "Pending Payment"
                         }
                       </div>
@@ -220,9 +224,7 @@ export default function OrderPage() {
           </nav> */}
 
           {/* Show QR Code at the top for paid orders */}
-          {(order.paymentStatus === "PAYMENT_LS_RLP" || 
-            order.paymentStatus === "PAYMENT_LS_QR_PROMPTPAY" || 
-            order.paymentStatus === "PAID") && (
+          {order.paymentStatus === "PAID" && (
             /* QR Code */
             <OrderQRCode order={order} />
           )}
@@ -263,12 +265,29 @@ export default function OrderPage() {
             </div>
           )}
           
-          {/* Payment Status Alert */}
+          {/* Refund Status Alert */}
+          {order.paymentStatus === "REFUND" && (
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-8">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-blue-700">
+                    <span className="font-medium">Refund Processed:</span> A refund has been processed for this order.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* No Payment Status Alert */}
           {order.orderStatus !== "CANCELED" && 
            order.orderStatus !== "EXPIRED" &&
-           order.paymentStatus !== "PAYMENT_LS_RLP" && 
-           order.paymentStatus !== "PAYMENT_LS_QR_PROMPTPAY" && 
-           order.paymentStatus !== "PAID" && (
+           order.paymentStatus !== "PAID" &&
+           order.paymentStatus !== "REFUND" && (
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8">
               <div className="flex">
                 <div className="flex-shrink-0">
@@ -305,9 +324,7 @@ export default function OrderPage() {
                   <dt className="text-sm font-medium text-gray-500">Phone Number</dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{order.phoneNumber}</dd>
                 </div>
-                {(order.paymentStatus === "PAYMENT_LS_RLP" || 
-                  order.paymentStatus === "PAYMENT_LS_QR_PROMPTPAY" || 
-                  order.paymentStatus === "PAID") && (
+                {order.paymentStatus === "PAID" && (
                   <>
                     <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                       <dt className="text-sm font-medium text-gray-500">Email</dt>
@@ -324,9 +341,7 @@ export default function OrderPage() {
           </div>
           
           {/* Show Order Items Summary only for paid orders */}
-          {(order.paymentStatus === "PAYMENT_LS_RLP" || 
-            order.paymentStatus === "PAYMENT_LS_QR_PROMPTPAY" || 
-            order.paymentStatus === "PAID") && (
+          {order.paymentStatus === "PAID" && (
             /* Order Items Summary */
             <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
               <div className="px-4 py-5 sm:px-6">
