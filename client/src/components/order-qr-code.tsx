@@ -1,4 +1,4 @@
-import { QrCode, Download } from "lucide-react";
+import { QrCode, Download, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type Order } from "@shared/schema";
 
@@ -87,14 +87,27 @@ export default function OrderQRCode({ order }: OrderQRCodeProps) {
             <span className="text-xs font-mono font-semibold text-gray-700">Order: {order.orderNumber}</span>
           </div>
           
-          <Button 
-            onClick={handleDownload}
-            className="flex items-center gap-2"
-            variant="outline"
-          >
-            <Download className="h-4 w-4" />
-            Download QR Code Image
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button 
+              onClick={handleDownload}
+              className="flex items-center gap-2"
+              variant="outline"
+            >
+              <Download className="h-4 w-4" />
+              Download QR Code Image
+            </Button>
+            
+            {order.receiptLink && (
+              <Button 
+                onClick={() => window.open(order.receiptLink || '#', '_blank')}
+                className="flex items-center gap-2"
+                variant="secondary"
+              >
+                <FileText className="h-4 w-4" />
+                View Receipt
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>

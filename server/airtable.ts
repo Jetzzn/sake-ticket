@@ -13,6 +13,7 @@ const airtableOrderSchema = z.object({
     orderItemsSummary: z.string().optional().default(""),
     orderStatus: z.string().optional().default("FINALIZED"),
     paymentStatus: z.string().optional().default("NO_PAYMENT"),
+    receiptLink: z.string().optional(),
   }),
 });
 
@@ -139,6 +140,7 @@ function convertAirtableOrderToOrder(airtableOrder: AirtableOrder): Order {
     orderItemsSummary: fields.orderItemsSummary ? JSON.stringify(fields.orderItemsSummary) : JSON.stringify("No items"),
     orderStatus: fields.orderStatus || "FINALIZED",
     paymentStatus: fields.paymentStatus || "NO_PAYMENT",
+    receiptLink: fields.receiptLink || null,
     airtableId: airtableOrder.id,
   };
 

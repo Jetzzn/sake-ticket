@@ -25,6 +25,7 @@ export const orders = pgTable("orders", {
   orderItemsSummary: jsonb("order_items_summary").notNull(),
   orderStatus: text("order_status").default("FINALIZED"),
   paymentStatus: text("payment_status").default("NO_PAYMENT"),
+  receiptLink: text("receipt_link"),
   airtableId: text("airtable_id").notNull().unique(),
 });
 
