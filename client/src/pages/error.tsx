@@ -40,25 +40,29 @@ export default function ErrorPage() {
         <meta name="description" content="The specified order could not be found" />
       </Helmet>
       
-      <div className="min-h-[80vh] flex items-center justify-center py-10">
-        <div className="max-w-lg w-full mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="shadow-lg">
-            <CardContent className="pt-6 pb-4 text-center">
-              <AlertCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">Order Not Found</h2>
-              <div className="text-gray-600 mb-6 space-y-2">
-                <p>
-                  {orderNumber 
-                    ? `No orders found matching the phone number "${orderNumber}"` 
-                    : errorMessage}
-                </p>
-                <p>
-                  กรุณาตรวจสอบหมายเลขโทรศัพท์ของคุณหรือหากถูกต้องกรุณารอประมาณ 15 นาทีแล้วกลับมาที่ลิงก์อีกครั้ง<br></br>Please check your phone number or if it is correct please wait for about 15 minutes and come back to the link again.
-                </p>
-              </div>
-
-            </CardContent>
-          </Card>
+      <div className="page-container flex items-center justify-center min-h-[80vh]">
+        <div className="bg-white/80 rounded-xl shadow-lg p-8 backdrop-blur-sm w-full max-w-lg">
+          <div className="text-center">
+            <AlertCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">Order Not Found</h2>
+            <div className="text-gray-600 mb-6 space-y-2">
+              <p>
+                {orderNumber 
+                  ? `No orders found matching the phone number "${orderNumber}"` 
+                  : errorMessage}
+              </p>
+              <p>
+                กรุณาตรวจสอบหมายเลขโทรศัพท์ของคุณหรือหากถูกต้องกรุณารอประมาณ 15 นาทีแล้วกลับมาที่ลิงก์อีกครั้ง<br></br>Please check your phone number or if it is correct please wait for about 15 minutes and come back to the link again.
+              </p>
+            </div>
+            
+            <Link href="/">
+              <Button variant="outline" className="flex items-center mx-auto mt-4">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Home
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </>

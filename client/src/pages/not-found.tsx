@@ -24,46 +24,45 @@ export default function NotFound() {
         <meta name="description" content="The requested page could not be found" />
       </Helmet>
       
-      <div className="min-h-[80vh] flex items-center justify-center py-10">
-        <div className="max-w-lg w-full mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="shadow-lg">
-            <CardContent className="pt-6 pb-4 text-center">
-              <AlertCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">Page Not Found</h2>
-              <div className="text-gray-600 mb-6 space-y-2">
-                <p>
-                  The page you're looking for doesn't exist or has been moved.
-                </p>
-                <p>
-                  You can search for orders by phone number instead:
-                </p>
-              </div>
+      <div className="page-container flex items-center justify-center min-h-[80vh]">
+        <div className="bg-white/80 rounded-xl shadow-lg p-8 backdrop-blur-sm w-full max-w-lg">
+          <div className="text-center">
+            <AlertCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">Page Not Found</h2>
+            <div className="text-gray-600 mb-6 space-y-2">
+              <p>
+                The page you're looking for doesn't exist or has been moved.
+              </p>
+              <p>
+                You can search for orders by phone number instead:
+              </p>
+            </div>
 
-              <form onSubmit={handleSubmit} className="mt-6 mb-2">
-                <div className="flex w-full max-w-sm mx-auto items-center space-x-2">
-                  <Input 
-                    type="text" 
-                    placeholder="Enter your phone number" 
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                    className="text-center"
-                  />
-                  <Button type="submit" disabled={!searchValue.trim()}>
-                    <Search className="h-4 w-4 mr-2" />
-                    Search
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-            <CardFooter className="justify-center border-t pt-4 pb-6">
+            <form onSubmit={handleSubmit} className="mt-6 mb-6">
+              <div className="flex w-full max-w-sm mx-auto items-center space-x-2">
+                <Input 
+                  type="text" 
+                  placeholder="Enter your phone number" 
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="text-center"
+                />
+                <Button type="submit" disabled={!searchValue.trim()}>
+                  <Search className="h-4 w-4 mr-2" />
+                  Search
+                </Button>
+              </div>
+            </form>
+            
+            <div className="border-t pt-6">
               <Link href="/">
                 <Button variant="outline" className="flex items-center mx-auto">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back to Home
                 </Button>
               </Link>
-            </CardFooter>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </>
