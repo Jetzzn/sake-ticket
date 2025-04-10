@@ -53,7 +53,7 @@ export default function ErrorPage() {
                     : errorMessage}
                 </p>
                 <p>
-                  Please check your phone number or if it is correct please wait for about 15 minutes and come back to the link again.
+                  กรุณาตรวจสอบหมายเลขโทรศัพท์ของคุณหรือหากถูกต้องกรุณารอประมาณ 15 นาทีแล้วกลับมาที่ลิงก์อีกครั้ง<br></br>Please check your phone number or if it is correct please wait for about 15 minutes and come back to the link again.
                 </p>
               </div>
 

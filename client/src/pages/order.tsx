@@ -84,10 +84,9 @@ export default function OrderPage() {
           <meta name="description" content={`Order list for phone number ${phoneNumber}`} />
         </Helmet>
         
-        <div className="py-10">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Breadcrumbs */}
-            {/* <nav className="flex mb-6" aria-label="Breadcrumb">
+        <div className="page-container">
+          <div className="bg-white/80 rounded-xl shadow-lg p-8 backdrop-blur-sm">
+            <nav className="flex mb-6" aria-label="Breadcrumb">
               <ol className="flex items-center space-x-4">
                 <li>
                   <div>
@@ -103,14 +102,8 @@ export default function OrderPage() {
                     <span className="ml-4 text-sm font-medium text-gray-500">Orders List</span>
                   </div>
                 </li>
-                <li>
-                  <div className="flex items-center">
-                    <ChevronRight className="text-gray-400 h-5 w-5" />
-                    <span className="ml-4 text-sm font-medium text-gray-900">{phoneNumber}</span>
-                  </div>
-                </li>
               </ol>
-            </nav> */}
+            </nav>
             
             <h1 className="text-2xl font-bold text-gray-900 mb-6">Orders for phone number {phoneNumber}</h1>
             
@@ -189,10 +182,9 @@ export default function OrderPage() {
         <meta name="description" content={`Order details for ${order.orderNumber}`} />
       </Helmet>
       
-      <div className="py-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumbs */}
-          {/* <nav className="flex mb-6" aria-label="Breadcrumb">
+      <div className="page-container">
+        <div className="bg-white/80 rounded-xl shadow-lg p-8 backdrop-blur-sm">
+          <nav className="flex mb-6" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-4">
               <li>
                 <div>
@@ -215,7 +207,7 @@ export default function OrderPage() {
                 </div>
               </li>
             </ol>
-          </nav> */}
+          </nav>
 
           {/* Show QR Code at the top for paid orders */}
           {order.paymentStatus === "PAID" && (
@@ -254,7 +246,8 @@ export default function OrderPage() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-yellow-700">
-                    <span className="font-medium">Please Note:</span> Payment is required to view full order details or if you have already paid please wait 15 minutes and then come back to the link.
+                    <span className="font-medium">Please Note:</span> Payment is required to view full order details or if you have already paid please wait 15 minutes and then come back to the link.<br></br>
+                    <span className="font-medium">โปรดทราบ:</span> จำเป็นต้องชำระเงินเพื่อดูรายละเอียดคำสั่งซื้อทั้งหมด หรือหากคุณได้ชำระเงินไปแล้ว โปรดรอ 15 นาทีแล้วกลับมาที่ลิงก์
                   </p>
                 </div>
               </div>

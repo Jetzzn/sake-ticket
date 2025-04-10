@@ -8,6 +8,12 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased text-foreground;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+    min-height: 100vh;
   }
+}
+
+.page-container {
+  @apply container mx-auto px-4 py-8 max-w-5xl;
 }

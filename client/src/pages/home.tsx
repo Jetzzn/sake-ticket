@@ -9,8 +9,8 @@ export default function HomePage() {
         <meta name="description" content="ติดตามคำสั่งซื้อของคุณด้วยการใส่หมายเลขโทรศัพท์" />
       </Helmet>
       
-      <div className="py-10">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="page-container">
+        <div className="bg-white/80 rounded-xl shadow-lg p-8 backdrop-blur-sm">
           <div className="text-center mb-10">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">Get E-ticket</h1>
             <p className="text-gray-600 max-w-xl mx-auto">

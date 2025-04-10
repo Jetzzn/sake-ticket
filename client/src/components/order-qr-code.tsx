@@ -104,7 +104,7 @@ export default function OrderQRCode({ order }: OrderQRCodeProps) {
                 variant="secondary"
               >
                 <FileText className="h-4 w-4" />
-                View Receipt
+                ขอใบกำกับภาษี/ใบเสร็จ
               </Button>
             )}
           </div>
