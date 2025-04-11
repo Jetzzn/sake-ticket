@@ -14,6 +14,7 @@ const airtableOrderSchema = z.object({
     orderStatus: z.string().optional().default("FINALIZED"),
     paymentStatus: z.string().optional().default("NO_PAYMENT"),
     receiptLink: z.string().optional(),
+    remark: z.string().optional(),
   }),
 });
 
@@ -50,6 +51,12 @@ export async function fetchOrderFromAirtable(orderNumber: string): Promise<Order
 
     // Validate the response
     const validatedRecord = airtableOrderSchema.parse(data.records[0]);
+    
+    // Skip if the order has "Old" in the remark field
+    if (validatedRecord.fields.remark && validatedRecord.fields.remark.includes('Old')) {
+      console.log(`Skipping order ${validatedRecord.fields.orderNumber} because it has 'Old' in the remark`);
+      return null;
+    }
     
     // Convert to our Order format
     return convertAirtableOrderToOrder(validatedRecord);
@@ -92,6 +99,13 @@ export async function fetchOrdersFromAirtableByPhone(phoneNumber: string): Promi
     for (const record of data.records) {
       try {
         const validatedRecord = airtableOrderSchema.parse(record);
+        
+        // Skip orders with "Old" in the remark field
+        if (validatedRecord.fields.remark && validatedRecord.fields.remark.includes('Old')) {
+          console.log(`Skipping order ${validatedRecord.fields.orderNumber} because it has 'Old' in the remark`);
+          continue;
+        }
+        
         const order = convertAirtableOrderToOrder(validatedRecord);
         orders.push(order);
       } catch (error) {
@@ -141,6 +155,7 @@ function convertAirtableOrderToOrder(airtableOrder: AirtableOrder): Order {
     orderStatus: fields.orderStatus || "FINALIZED",
     paymentStatus: fields.paymentStatus || "NO_PAYMENT",
     receiptLink: fields.receiptLink || null,
+    remark: fields.remark || null,
     airtableId: airtableOrder.id,
   };
 
