@@ -80,13 +80,14 @@ export default function OrderPage() {
     return (
       <>
         <Helmet>
-          <title>All Orders - Order Tracking System</title>
+          
+          <title>All Orders - Orderb Tracking System</title>
           <meta name="description" content={`Order list for phone number ${phoneNumber}`} />
         </Helmet>
         
         <div className="page-container">
           <div className="bg-white/80 rounded-xl shadow-lg p-8 backdrop-blur-sm">
-            <nav className="flex mb-6" aria-label="Breadcrumb">
+            {/* <nav className="flex mb-6" aria-label="Breadcrumb">
               <ol className="flex items-center space-x-4">
                 <li>
                   <div>
@@ -103,67 +104,80 @@ export default function OrderPage() {
                   </div>
                 </li>
               </ol>
-            </nav>
-            
+            </nav> */}
+            {/* Logo added above the heading */}
+            <div className="flex justify-center mb-6">
+              <img 
+                src="/src/assets/sake.png" 
+                alt="Sake Week Thailand 2025 Logo" 
+                className="h-24 w-auto"
+              />
+            </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-6">Orders for phone number {phoneNumber}</h1>
             
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
               {data.map((order: Order) => (
-                <Card key={order.orderNumber} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h2 className="text-lg font-semibold mb-2">
-                          Order #{order.orderNumber}
-                        </h2>
-                        <p className="text-sm text-gray-500 mb-4">{order.recipientName}</p>
-                        
-                        <div className="flex items-center text-sm text-gray-500 mb-1">
-                          <Calendar className="h-4 w-4 mr-2" />
-                          <span>Order Date: Not available</span>
-                        </div>
-                        
-                        <div className="flex items-center text-sm text-gray-500 mb-4">
-                          <Package className="h-4 w-4 mr-2" />
-                          <span>Status: {
-                            order.paymentStatus === "PAID" ? "Paid" :
-                            order.paymentStatus === "REFUND" ? "Refunded" :
-                            order.paymentStatus === "NO_PAYMENT" ? "No Payment" :
-                            "Pending Payment"
-                          }</span>
-                        </div>
-                      </div>
-                      
-                      {/* Status badge */}
-                      <div className={`text-xs font-medium rounded-full px-2.5 py-1 ${
-                        order.paymentStatus === "PAID" ? "bg-green-100 text-green-800" :
-                        order.paymentStatus === "REFUND" ? "bg-blue-100 text-blue-800" :
-                        order.paymentStatus === "NO_PAYMENT" ? "bg-yellow-100 text-yellow-800" :
-                        "bg-yellow-100 text-yellow-800"
-                      }`}>
-                        {
-                          order.paymentStatus === "PAID" ? "Paid" :
-                          order.paymentStatus === "REFUND" ? "Refunded" :
-                          order.paymentStatus === "NO_PAYMENT" ? "No Payment" :
-                          "Pending Payment"
-                        }
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 pt-4 border-t border-gray-100">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <p className="text-lg font-bold">{order.totalPrice} THB</p>
-                        </div>
-                        <Link href={`/order/${phoneNumber}/${order.orderNumber}`}>
-                          <Button variant="outline" size="sm">
-                            View Details
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+        // Card component with order items summary
+        <Card key={order.orderNumber} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-start">
+              <div>
+                <h2 className="text-lg font-semibold mb-2">
+                  Order #{order.orderNumber}
+                </h2>
+                <p className="text-sm text-gray-500 mb-4">{order.recipientName}</p>
+
+                <div className="flex items-center text-sm text-gray-500 mb-4">
+                  <Package className="h-4 w-4 mr-2" />
+                  <span>Status: {
+                    order.paymentStatus === "PAID" ? "Paid" :
+                    order.paymentStatus === "REFUND" ? "Refunded" :
+                    order.paymentStatus === "NO_PAYMENT" ? "No Payment" :
+                    "Pending Payment"
+                  }</span>
+                </div>
+              </div>
+
+              {/* Status badge */}
+              <div className={`text-xs font-medium rounded-full px-2.5 py-1 ${
+                order.paymentStatus === "PAID" ? "bg-green-100 text-green-800" :
+                order.paymentStatus === "REFUND" ? "bg-blue-100 text-blue-800" :
+                order.paymentStatus === "NO_PAYMENT" ? "bg-yellow-100 text-yellow-800" :
+                "bg-yellow-100 text-yellow-800"
+              }`}>
+                {
+                  order.paymentStatus === "PAID" ? "Paid" :
+                  order.paymentStatus === "REFUND" ? "Refunded" :
+                  order.paymentStatus === "NO_PAYMENT" ? "No Payment" :
+                  "Pending Payment"
+                }
+              </div>
+            </div>
+
+            {/* Order Items Summary */}
+            <div className="mt-4 mb-4 pt-4 border-t border-gray-100">
+              <h3 className="text-sm font-medium text-gray-700 mb-2">Order:</h3>
+              <div className="bg-gray-50 rounded p-3 text-sm text-gray-800">
+                {typeof order.orderItemsSummary === 'string' 
+                  ? order.orderItemsSummary.replace(/^"|"$/g, '') 
+                  : 'No order items information available'}
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-gray-100">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-lg font-bold">{order.totalPrice} THB</p>
+                </div>
+                <Link href={`/order/${phoneNumber}/${order.orderNumber}`}>
+                  <Button variant="outline" size="sm">
+                    View Details
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
               ))}
             </div>
           </div>
@@ -184,7 +198,7 @@ export default function OrderPage() {
       
       <div className="page-container">
         <div className="bg-white/80 rounded-xl shadow-lg p-8 backdrop-blur-sm">
-          <nav className="flex mb-6" aria-label="Breadcrumb">
+          {/* <nav className="flex mb-6" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-4">
               <li>
                 <div>
@@ -207,7 +221,7 @@ export default function OrderPage() {
                 </div>
               </li>
             </ol>
-          </nav>
+          </nav> */}
 
           {/* Show QR Code at the top for paid orders */}
           {order.paymentStatus === "PAID" && (

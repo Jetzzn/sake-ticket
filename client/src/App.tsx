@@ -7,7 +7,7 @@ import ErrorPage from "@/pages/error";
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col ">
       <main className="flex-grow">
         <Switch>
           <Route path="/" component={HomePage} />
