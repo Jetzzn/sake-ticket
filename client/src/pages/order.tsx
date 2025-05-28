@@ -108,7 +108,7 @@ export default function OrderPage() {
             {/* Logo added above the heading */}
             <div className="flex justify-center mb-6">
               <img 
-                src="/src/assets/sake.png" 
+                src="https://in2it-service.com/Sake/sake.png" 
                 alt="Sake Week Thailand 2025 Logo" 
                 className="h-24 w-auto"
               />

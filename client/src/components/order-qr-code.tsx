@@ -65,14 +65,20 @@ export default function OrderQRCode({ order }: OrderQRCodeProps) {
       img.src = qrCodeImageUrl;
     }
   };
-  
   return (
+    
     <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
+      <div className="flex justify-center mb-6">
+        <img 
+          src="https://in2it-service.com/Sake/sake.png" 
+          alt="Sake Week Thailand 2025 Logo" 
+          className="h-24 w-auto"
+        />
+      </div>
       <div className="px-4 py-5 sm:px-6 flex items-center">
-        <QrCode className="h-5 w-5 text-gray-500 mr-2" />
         <div>
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Order QR Code</h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">Scan to view this order.</p>
+          <h3 className="text-lg leading-6 font-bold text-gray-900">E-Ticket Sake Week Thailand 2025</h3>
+
         </div>
       </div>
       <div className="border-t border-gray-200">
